@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">My Tasks</string>
+
+    <string name="label_tasks">Tasks</string>
+    <string name="label_new_task">New task</string>
+    <string name="newTask_Task">Task:</string>
+    <string name="newTask_Name">Name</string>
+</resources>
