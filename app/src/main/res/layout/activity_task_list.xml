@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     tools:context="pl.edu.pwr.kotlin.mytasks.TaskListActivity">
 
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tasksTasksList"
         android:layout_width="0dp"
