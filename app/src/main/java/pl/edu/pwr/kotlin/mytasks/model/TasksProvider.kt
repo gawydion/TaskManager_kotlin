@@ -15,4 +15,8 @@ object TasksProvider {
     fun remove( task : Task) {
         tasks.remove(task)
     }
+
+    fun  getTaksWithId(id: Int): Task  {
+        return  tasks.get(id)
+    }
 }

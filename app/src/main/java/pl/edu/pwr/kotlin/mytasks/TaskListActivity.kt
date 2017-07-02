@@ -1,6 +1,5 @@
 package pl.edu.pwr.kotlin.mytasks
 
-import android.content.ClipData
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -12,19 +11,16 @@ import kotlinx.android.synthetic.main.activity_task_list.*
 import pl.edu.pwr.kotlin.mytasks.adapters.TasksAdapter
 import pl.edu.pwr.kotlin.mytasks.data.Task
 import pl.edu.pwr.kotlin.mytasks.model.TasksProvider
-import android.view.ContextMenu.ContextMenuInfo
-import android.widget.Toast
-import com.mcxiaoke.koi.ext.find
-import com.mcxiaoke.koi.ext.onClick
-import com.mcxiaoke.koi.ext.toast
-import kotlinx.android.synthetic.main.activity_task_list.*
 import android.app.Activity
-
-
-
+import android.app.AlertDialog
+import android.support.v7.widget.RecyclerView
+import pl.edu.pwr.kotlin.mytasks.support.DBhandler
+import pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport
 
 
 class TaskListActivity : AppCompatActivity() {
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +30,29 @@ class TaskListActivity : AppCompatActivity() {
         val newTaskName = intent.getStringExtra("name")
         val newTaskDescription = intent.getStringExtra("description")
 
+        val dlgAlert = AlertDialog.Builder(this)
+
         initView()
         initYourTODOs()
+
+        val dbHelper = DBhandler(this)
+        dbHelper.open()
+
+        ItemClickSupport.addTo(tasksTasksList).setOnItemClickListener(object : pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport.OnItemClickListener {
+            override fun onItemClicked(recyclerView: RecyclerView, position: Int, v: View) {
+
+                dlgAlert.setMessage(TasksProvider.getTaksWithId(position).desc);
+                dlgAlert.setTitle(TasksProvider.getTaksWithId(position).name);
+                dlgAlert.setPositiveButton("OK", null);
+                dlgAlert.setCancelable(true);
+                dlgAlert.setPositiveButton("Ok"
+                ) { dialog, which ->
+                    //dismiss the dialog
+                }
+                dlgAlert.create().show();
+            }
+        })
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -63,11 +80,11 @@ class TaskListActivity : AppCompatActivity() {
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
 
-                    Toast.makeText(this, data.getStringExtra("name"), Toast.LENGTH_SHORT).show()
+
 
                     initView()
                     //initYourTODOs()
-                    TasksProvider.add(Task(name = data.getStringExtra("name")))
+                    TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description") ))
 
 
                 }
@@ -78,12 +95,12 @@ class TaskListActivity : AppCompatActivity() {
     private fun initYourTODOs() {
         //TasksProvider.add(Task(name = "build me!"))
         //TasksProvider.add(Task(name = "implement add new task"))
-        TasksProvider.add(Task(name = "show task detail"))
-        TasksProvider.add(Task(name = "add task status"))
-        TasksProvider.add(Task(name = "show task's status and type on list"))
-        TasksProvider.add(Task(name = "should whole task be editable?"))
-        TasksProvider.add(Task(name = "refactor app if needed"))
-        TasksProvider.add(Task(name = "start love Kotlin ;)"))
+        //TasksProvider.add(Task(name = "show task detail"))
+        //TasksProvider.add(Task(name = "add task status"))
+        //TasksProvider.add(Task(name = "show task's status and type on list"))
+        //TasksProvider.add(Task(name = "should whole task be editable?"))
+        //TasksProvider.add(Task(name = "refactor app if needed"))
+        //TasksProvider.add(Task(name = "start love Kotlin ;)"))
     }
 
     private fun initView() {
