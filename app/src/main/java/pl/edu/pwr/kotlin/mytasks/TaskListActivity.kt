@@ -14,6 +14,8 @@ import pl.edu.pwr.kotlin.mytasks.model.TasksProvider
 import android.app.Activity
 import android.app.AlertDialog
 import android.support.v7.widget.RecyclerView
+import android.util.Log
+import android.widget.Toast
 import pl.edu.pwr.kotlin.mytasks.support.DBhandler
 import pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport
 
@@ -32,11 +34,37 @@ class TaskListActivity : AppCompatActivity() {
 
         val dlgAlert = AlertDialog.Builder(this)
 
-        initView()
-        initYourTODOs()
-
         val dbHelper = DBhandler(this)
         dbHelper.open()
+        dbHelper.deleteAllTasks()
+
+        dbHelper.createTask("zakupy", "typ", "cos tam detale", "jakas data")
+        dbHelper.createTask("sprzatanie", "typ1", "cos tam detale2", "jakas data2")
+        dbHelper.createTask("odkurzanie", "typ2", "cos tam detale3", "jakas data4")
+
+
+        val coursor = dbHelper.fetchAllTasks()
+
+        Log.w("BD", coursor.getString(0).toString())
+        Log.w("BD", coursor.getString(1).toString())
+        Log.w("BD", coursor.getString(2).toString())
+        Log.w("BD", coursor.getString(3).toString())
+        Log.w("BD", coursor.getString(4).toString())
+        Log.v("BD", coursor.columnCount.toString())
+
+        coursor.moveToNext()
+
+        Log.w("BD", coursor.getString(0).toString())
+        Log.w("BD", coursor.getString(1).toString())
+        Log.w("BD", coursor.getString(2).toString())
+        Log.w("BD", coursor.getString(3).toString())
+        Log.w("BD", coursor.getString(4).toString())
+
+        Log.v("BD", coursor.columnCount.toString())
+
+
+        initView()
+        initYourTODOs()
 
         ItemClickSupport.addTo(tasksTasksList).setOnItemClickListener(object : pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport.OnItemClickListener {
             override fun onItemClicked(recyclerView: RecyclerView, position: Int, v: View) {
@@ -101,6 +129,12 @@ class TaskListActivity : AppCompatActivity() {
         //TasksProvider.add(Task(name = "should whole task be editable?"))
         //TasksProvider.add(Task(name = "refactor app if needed"))
         //TasksProvider.add(Task(name = "start love Kotlin ;)"))
+
+        //val columns = arrayOf<String>(DBhandler.Tasks._ID, DBhandler.Tasks.COLUMN_NAME_NAME, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE)
+
+
+
+        TasksProvider.add(Task(name = DBhandler.Tasks.COLUMN_NAME_NAME.toString()))
     }
 
     private fun initView() {

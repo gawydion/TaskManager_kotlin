@@ -74,7 +74,7 @@ public class DBhandler {
         }
     }
 
-    public long createClient(String name, String type, String desc, String dueDate) {
+    public long createTask(String name, String type, String desc, String dueDate) {
         ContentValues initialValues = new ContentValues();
         initialValues.put(Tasks.COLUMN_NAME_NAME, name);
         initialValues.put(Tasks.COLUMN_NAME_TYPE, type);
@@ -104,10 +104,5 @@ public class DBhandler {
 
     public void setOrderBy(String txt) {
         orderBy = txt;
-    }
-
-    public void insertSomeTask() {
-        //createClient("Majster","ul. Wielkopolska 12, 52-123 Wrocław","71 22 00 22");
-        //createClient("Mechanik","ul. Grunwaldzka 10, 51-053 Wrocław","71 22 00 30");
     }
 }
