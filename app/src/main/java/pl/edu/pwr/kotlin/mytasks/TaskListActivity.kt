@@ -22,50 +22,22 @@ import pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport
 
 class TaskListActivity : AppCompatActivity() {
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_list)
         logv("onCreate()")
 
-        val newTaskName = intent.getStringExtra("name")
-        val newTaskDescription = intent.getStringExtra("description")
+        //val newTaskName = intent.getStringExtra("name")
+        //val newTaskDescription = intent.getStringExtra("description")
 
-        val dlgAlert = AlertDialog.Builder(this)
-
-        val dbHelper = DBhandler(this)
-        dbHelper.open()
-        dbHelper.deleteAllTasks()
-
-        dbHelper.createTask("zakupy", "typ", "cos tam detale", "jakas data")
-        dbHelper.createTask("sprzatanie", "typ1", "cos tam detale2", "jakas data2")
-        dbHelper.createTask("odkurzanie", "typ2", "cos tam detale3", "jakas data4")
-
-
-        val coursor = dbHelper.fetchAllTasks()
-
-        Log.w("BD", coursor.getString(0).toString())
-        Log.w("BD", coursor.getString(1).toString())
-        Log.w("BD", coursor.getString(2).toString())
-        Log.w("BD", coursor.getString(3).toString())
-        Log.w("BD", coursor.getString(4).toString())
-        Log.v("BD", coursor.columnCount.toString())
-
-        coursor.moveToNext()
-
-        Log.w("BD", coursor.getString(0).toString())
-        Log.w("BD", coursor.getString(1).toString())
-        Log.w("BD", coursor.getString(2).toString())
-        Log.w("BD", coursor.getString(3).toString())
-        Log.w("BD", coursor.getString(4).toString())
-
-        Log.v("BD", coursor.columnCount.toString())
-
+        //val dbHelper = DBhandler(this)
+        //dbHelper.open()
+        //dbHelper.deleteAllTasks()
 
         initView()
         initYourTODOs()
 
+        val dlgAlert = AlertDialog.Builder(this)
         ItemClickSupport.addTo(tasksTasksList).setOnItemClickListener(object : pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport.OnItemClickListener {
             override fun onItemClicked(recyclerView: RecyclerView, position: Int, v: View) {
 
@@ -76,6 +48,11 @@ class TaskListActivity : AppCompatActivity() {
                 dlgAlert.setPositiveButton("Ok"
                 ) { dialog, which ->
                     //dismiss the dialog
+                }
+                dlgAlert.setNegativeButton("Delete"
+                ) { dialog, which ->
+                    TasksProvider.remove(TasksProvider.getTaksWithId(position))
+                    initView()
                 }
                 dlgAlert.create().show();
             }
@@ -107,14 +84,14 @@ class TaskListActivity : AppCompatActivity() {
         when (requestCode) {
             1 -> {
                 if (resultCode == Activity.RESULT_OK) {
-
-
-
                     initView()
-                    //initYourTODOs()
+
                     TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description") ))
 
-
+                    val dbHelper = DBhandler(this)
+                    dbHelper.open()
+                    dbHelper.createTask(data.getStringExtra("name"), "typ", data.getStringExtra("description"), "jakas data")
+                    dbHelper.close()
                 }
             }
         }
@@ -133,8 +110,27 @@ class TaskListActivity : AppCompatActivity() {
         //val columns = arrayOf<String>(DBhandler.Tasks._ID, DBhandler.Tasks.COLUMN_NAME_NAME, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE)
 
 
+        val dbHelper = DBhandler(this)
+        //val dbHelper = DBhandler(this)
+        //dbHelper.deleteAllTasks()
+        dbHelper.open()
 
-        TasksProvider.add(Task(name = DBhandler.Tasks.COLUMN_NAME_NAME.toString()))
+        val coursor = dbHelper.fetchAllTasks()
+
+        while(coursor.position < coursor.count){
+
+            TasksProvider.add(Task(name = coursor.getString(1).toString(), desc = coursor.getString(3).toString()))
+
+            coursor.moveToNext()
+        }
+
+        dbHelper.close()
+        //Log.w("BD", coursor.getString(0).toString()) id
+        //Log.w("BD", coursor.getString(1).toString()) name
+        //Log.w("BD", coursor.getString(2).toString()) typ
+        //Log.w("BD", coursor.getString(3).toString()) desc
+        //Log.w("BD", coursor.getString(4).toString()) due date
+
     }
 
     private fun initView() {
