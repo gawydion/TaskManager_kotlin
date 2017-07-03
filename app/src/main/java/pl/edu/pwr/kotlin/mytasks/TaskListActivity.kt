@@ -103,6 +103,9 @@ class TaskListActivity : AppCompatActivity() {
                     dbHelper.createTask(data.getStringExtra("name"), "typ", data.getStringExtra("description"), "jakas data")
                     dbHelper.close()
                 }
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    initView()
+                }
             }
         }
     }
@@ -117,23 +120,21 @@ class TaskListActivity : AppCompatActivity() {
         //TasksProvider.add(Task(name = "refactor app if needed"))
         //TasksProvider.add(Task(name = "start love Kotlin ;)"))
 
-        //val columns = arrayOf<String>(DBhandler.Tasks._ID, DBhandler.Tasks.COLUMN_NAME_NAME, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE, DBhandler.Tasks.COLUMN_NAME_TYPE)
-
-
         val dbHelper = DBhandler(this)
         //val dbHelper = DBhandler(this)
         //dbHelper.deleteAllTasks()
         dbHelper.open()
-
         val coursor = dbHelper.fetchAllTasks()
 
-        while(coursor.position < coursor.count){
+        if(TasksProvider.tasks.size==0){
 
-            TasksProvider.add(Task(name = coursor.getString(1).toString(), desc = coursor.getString(3).toString()))
+            while(coursor.position < coursor.count){
 
-            coursor.moveToNext()
+                TasksProvider.add(Task(name = coursor.getString(1).toString(), desc = coursor.getString(3).toString()))
+
+                coursor.moveToNext()
+            }
         }
-
         dbHelper.close()
         //Log.w("BD", coursor.getString(0).toString()) id
         //Log.w("BD", coursor.getString(1).toString()) name
