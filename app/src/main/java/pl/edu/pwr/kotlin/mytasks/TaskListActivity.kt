@@ -51,7 +51,17 @@ class TaskListActivity : AppCompatActivity() {
                 }
                 dlgAlert.setNegativeButton("Delete"
                 ) { dialog, which ->
+
+                    val tmpName: String = TasksProvider.getTaksWithId(position).name
+                    val tmpDesc: String = TasksProvider.getTaksWithId(position).desc
+
                     TasksProvider.remove(TasksProvider.getTaksWithId(position))
+
+                    val dbHelper = DBhandler(applicationContext)
+                    dbHelper.open()
+                    dbHelper.deleteTask(tmpName, tmpDesc)
+                    dbHelper.close()
+
                     initView()
                 }
                 dlgAlert.create().show();

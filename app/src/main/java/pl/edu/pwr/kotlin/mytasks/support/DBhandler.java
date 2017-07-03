@@ -84,6 +84,16 @@ public class DBhandler {
         return mDb.insert(Tasks.TABLE_NAME, null, initialValues);
     }
 
+
+    //db.delete("tablename","id=? and name=?",new String[]{"1","jack"});
+    public boolean deleteTask(String name, String desc) {
+        int doneDelete = 0;
+        doneDelete = mDb.delete(Tasks.TABLE_NAME, "name=? and desc=?" , new String[]{name,desc});
+
+        Log.w(TAG, Integer.toString(doneDelete));   // Logujemy ilosc usunietych wpisow
+        return doneDelete > 0;
+    }
+
     public boolean deleteAllTasks() {
         int doneDelete = 0;
         doneDelete = mDb.delete(Tasks.TABLE_NAME, null , null);
