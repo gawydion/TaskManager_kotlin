@@ -8,7 +8,7 @@ import android.view.KeyEvent
 import com.mcxiaoke.koi.ext.onClick
 import kotlinx.android.synthetic.main.activity_new_task.*
 import android.view.KeyEvent.KEYCODE_BACK
-
+import android.widget.Toast
 
 
 class NewTaskActivity : AppCompatActivity() {
@@ -21,14 +21,18 @@ class NewTaskActivity : AppCompatActivity() {
 
             val resultIntent = Intent()
 
-            if(!(newTaskName.text.toString().equals("") || newTaskDescription.text.toString().equals(""))){
+            if(!(newTaskName.text.toString().equals(""))){
                 resultIntent.putExtra("name", newTaskName.text.toString())
-                resultIntent.putExtra("description", newTaskDescription.text.toString())
+
+                if(newTaskDescription.text.toString().equals("")) {
+                    newTaskDescription.setText("<no description>")
+                    resultIntent.putExtra("description", newTaskDescription.text.toString())
+                }
+
                 setResult(Activity.RESULT_OK, resultIntent)
+                finish()
             }
-
-            finish()
-
+            Toast.makeText(applicationContext, "Input task data", Toast.LENGTH_LONG).show()
         }
 
     }

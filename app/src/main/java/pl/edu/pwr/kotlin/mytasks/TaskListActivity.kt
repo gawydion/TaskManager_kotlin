@@ -18,6 +18,7 @@ import android.util.Log
 import android.widget.Toast
 import pl.edu.pwr.kotlin.mytasks.support.DBhandler
 import pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport
+import java.util.concurrent.RecursiveAction
 
 
 class TaskListActivity : AppCompatActivity() {
@@ -68,6 +69,14 @@ class TaskListActivity : AppCompatActivity() {
             }
         })
 
+        ItemClickSupport.addTo(tasksTasksList).setOnItemLongClickListener(object : pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport.OnItemLongClickListener {
+            override fun onItemLongClicked(recyclerView: RecyclerView?, position: Int, v: View?): Boolean {
+
+                Toast.makeText(applicationContext, "Long click...", Toast.LENGTH_LONG).show()
+                
+                return true
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
