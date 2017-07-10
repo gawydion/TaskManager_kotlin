@@ -33,7 +33,10 @@ class TasksAdapter(private val mContext: Context, private val mTasks: ArrayList<
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val name = mTasks[position].name
         holder.nameStr.text=name;
-        val color = when(name.get(0).toInt() % 5){
+
+        val prio = mTasks[position].prio
+
+        val color = when(prio){
             0 -> color(R.color.task0)
             1 -> color(R.color.task1)
             2 -> color(R.color.task2)

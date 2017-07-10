@@ -73,7 +73,19 @@ class TaskListActivity : AppCompatActivity() {
             override fun onItemLongClicked(recyclerView: RecyclerView?, position: Int, v: View?): Boolean {
 
                 Toast.makeText(applicationContext, "Long click...", Toast.LENGTH_LONG).show()
-                
+
+
+                //zmienic request code na 2
+                //dodac obsluge powrotu od code 2
+                //ogarnąc jak dostac sie do recycler view, a może do TaskProvider.getTaskWithId[position]
+
+
+                val intent = Intent(applicationContext,NewTaskActivity::class.java)
+                startActivityForResult(intent, 1)
+
+                //TODO("Dodać edycję taska")
+                //TODO wywala exception
+
                 return true
             }
         })
@@ -105,11 +117,11 @@ class TaskListActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK) {
                     initView()
 
-                    TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description") ))
+                    TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description"), prio = data.getIntExtra("prio", 0) ))
 
                     val dbHelper = DBhandler(this)
                     dbHelper.open()
-                    dbHelper.createTask(data.getStringExtra("name"), "typ", data.getStringExtra("description"), "jakas data")
+                    dbHelper.createTask(data.getStringExtra("name"), data.getIntExtra("prio", 0).toString(), data.getStringExtra("description"), "jakas data")
                     dbHelper.close()
                 }
                 if (resultCode == Activity.RESULT_CANCELED) {
@@ -139,18 +151,12 @@ class TaskListActivity : AppCompatActivity() {
 
             while(coursor.position < coursor.count){
 
-                TasksProvider.add(Task(name = coursor.getString(1).toString(), desc = coursor.getString(3).toString()))
+                TasksProvider.add(Task(name = coursor.getString(1).toString(), prio = coursor.getString(2).toInt(), desc = coursor.getString(3).toString()))
 
                 coursor.moveToNext()
             }
         }
         dbHelper.close()
-        //Log.w("BD", coursor.getString(0).toString()) id
-        //Log.w("BD", coursor.getString(1).toString()) name
-        //Log.w("BD", coursor.getString(2).toString()) typ
-        //Log.w("BD", coursor.getString(3).toString()) desc
-        //Log.w("BD", coursor.getString(4).toString()) due date
-
     }
 
     private fun initView() {

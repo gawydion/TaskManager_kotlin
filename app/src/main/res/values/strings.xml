@@ -5,4 +5,13 @@
     <string name="label_new_task">New task</string>
     <string name="newTask_Task">Task:</string>
     <string name="newTask_Name">Name</string>
+
+    <string-array name="prio_spinner">
+        <item>green</item>
+        <item>blue</item>
+        <item>orange</item>
+        <item>red</item>
+        <item>purple</item>
+    </string-array>
+
 </resources>
