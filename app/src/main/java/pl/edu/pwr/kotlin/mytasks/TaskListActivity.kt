@@ -82,9 +82,6 @@ class TaskListActivity : AppCompatActivity() {
 
                 startActivityForResult(intent, 2)
 
-                //TODO("Dodać edycję taska")
-                //TODO wywala exception
-
                 return true
             }
         })
