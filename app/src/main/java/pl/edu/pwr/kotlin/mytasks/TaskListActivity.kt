@@ -71,17 +71,16 @@ class TaskListActivity : AppCompatActivity() {
 
         ItemClickSupport.addTo(tasksTasksList).setOnItemLongClickListener(object : pl.edu.pwr.kotlin.mytasks.support.ItemClickSupport.OnItemLongClickListener {
             override fun onItemLongClicked(recyclerView: RecyclerView?, position: Int, v: View?): Boolean {
-
-                Toast.makeText(applicationContext, "Long click...", Toast.LENGTH_LONG).show()
-
-
                 //zmienic request code na 2
                 //dodac obsluge powrotu od code 2
                 //ogarnąc jak dostac sie do recycler view, a może do TaskProvider.getTaskWithId[position]
 
-
                 val intent = Intent(applicationContext,NewTaskActivity::class.java)
-                startActivityForResult(intent, 1)
+
+                intent.putExtra("taskNo", position)
+                intent.putExtra("requestCode", 2)
+
+                startActivityForResult(intent, 2)
 
                 //TODO("Dodać edycję taska")
                 //TODO wywala exception
@@ -120,6 +119,34 @@ class TaskListActivity : AppCompatActivity() {
                     TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description"), prio = data.getIntExtra("prio", 0) ))
 
                     val dbHelper = DBhandler(this)
+                    dbHelper.open()
+                    dbHelper.createTask(data.getStringExtra("name"), data.getIntExtra("prio", 0).toString(), data.getStringExtra("description"), "jakas data")
+                    dbHelper.close()
+                }
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    initView()
+                }
+            }
+
+            2->{
+                if (resultCode == Activity.RESULT_OK) {
+                    initView()
+
+                    val tmpName: String = TasksProvider.getTaksWithId(data.getIntExtra("taskNo", -1)).name
+                    val tmpDesc: String = TasksProvider.getTaksWithId(data.getIntExtra("taskNo", -1)).desc
+
+                    TasksProvider.remove(TasksProvider.getTaksWithId(data.getIntExtra("taskNo", -1)))
+
+                    val dbHelper = DBhandler(applicationContext)
+                    dbHelper.open()
+                    dbHelper.deleteTask(tmpName, tmpDesc)
+                    dbHelper.close()
+
+
+
+                    TasksProvider.add(Task(name = data.getStringExtra("name"), desc = data.getStringExtra("description"), prio = data.getIntExtra("prio", 0) ))
+
+                    //val dbHelper = DBhandler(this)
                     dbHelper.open()
                     dbHelper.createTask(data.getStringExtra("name"), data.getIntExtra("prio", 0).toString(), data.getStringExtra("description"), "jakas data")
                     dbHelper.close()

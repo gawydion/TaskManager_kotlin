@@ -21,29 +21,32 @@ import org.jetbrains.anko.sdk25.coroutines.onItemClick
 import org.jetbrains.anko.sdk25.coroutines.onItemSelectedListener
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
-
-
+import pl.edu.pwr.kotlin.mytasks.model.TasksProvider
 
 
 class NewTaskActivity : AppCompatActivity() {
+
+    val resultIntent = Intent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_task)
 
-        val resultIntent = Intent()
-        resultIntent.putExtra("prio", 0)
-        //
+        /*
+        * First, get the intent which has started your activity using the getIntent() method:
+
+Intent intent = getIntent();
+If your extra data is represented as strings, then you can use intent.getStringExtra(String name) method. In your case:
+
+String id = intent.getStringExtra("id");
+String name = intent.getStringExtra("name");*/
 
         val staticAdapter = ArrayAdapter.createFromResource(this, R.array.prio_spinner, android.R.layout.simple_spinner_item)
-
         staticAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
         newTaskTypeSpinner.setAdapter(staticAdapter)
 
-        val color = color(R.color.task0)
+        val color = color(R.color.task2)
         newTaskTypeImg.setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
-
         newTaskTypeSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
             override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
                 val color = when(position){
@@ -64,7 +67,19 @@ class NewTaskActivity : AppCompatActivity() {
 
         })
 
-        //
+        val intent = intent
+        val taskNo = intent.getIntExtra("taskNo", 0)
+        if(intent.getIntExtra("requestCode", 0)==2){
+            resultIntent.putExtra("taskNo",taskNo)
+
+            newTaskName.setText(TasksProvider.getTaksWithId(taskNo).name)
+            newTaskDescription.setText(TasksProvider.getTaksWithId(taskNo).desc)
+            newTaskTypeSpinner.setSelection(TasksProvider.getTaksWithId(taskNo).prio)
+
+            //Toast.makeText(applicationContext, "Prio: " + TasksProvider.getTaksWithId(taskNo).prio, Toast.LENGTH_SHORT).show()
+            //setResult(Activity.RESULT_OK, resultIntent)
+            //finish()
+        }
 
         newTask_button_save.onClick {
 

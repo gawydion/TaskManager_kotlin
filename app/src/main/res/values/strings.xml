@@ -8,10 +8,8 @@
 
     <string-array name="prio_spinner">
         <item>green</item>
-        <item>blue</item>
         <item>orange</item>
         <item>red</item>
-        <item>purple</item>
     </string-array>
 
 </resources>
